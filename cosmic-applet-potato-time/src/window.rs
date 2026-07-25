@@ -18,7 +18,7 @@ use cosmic::{
     surface, theme,
     widget::{
         Button, Grid, Id, autosize, button, container, divider, grid, icon, rectangle_tracker::*,
-        space, text,
+        space, text, toggler,
     },
 };
 use jiff::{
@@ -115,6 +115,8 @@ pub enum Message {
     PreviousMonth,
     NextMonth,
     OpenDateTimeSettings,
+    ToggleWordClock(bool),
+    ToggleRainbowMode(bool),
     Token(TokenUpdate),
     ConfigChanged(TimeAppletConfig),
     TimezoneUpdate(String),
@@ -589,7 +591,7 @@ impl cosmic::Application for Window {
             activation_token_subscription(0).map(Message::Token),
             timezone_subscription(),
             wake_from_sleep_subscription(),
-            self.core.watch_config(Self::APP_ID).map(|u| {
+            self.core.watch_config("com.system76.CosmicAppletTime").map(|u| {
                 for err in u.errors {
                     tracing::error!(?err, "Error watching config");
                 }
@@ -698,6 +700,16 @@ impl cosmic::Application for Window {
                 } else {
                     tracing::error!("Wayland tx is None");
                 }
+                Task::none()
+            }
+            Message::ToggleWordClock(enabled) => {
+                self.isWordClock = enabled;
+                self.is_word_clock = enabled;
+                Task::none()
+            }
+            Message::ToggleRainbowMode(enabled) => {
+                self.isRainbowMode = enabled;
+                self.is_rainbow_mode = enabled;
                 Task::none()
             }
             Message::Token(u) => {
@@ -842,6 +854,22 @@ impl cosmic::Application for Window {
             padded_control(divider::horizontal::default()).padding([space_xxs, space_s]),
             menu_button(text::body(fl!("datetime-settings")))
                 .on_press(Message::OpenDateTimeSettings),
+            padded_control(divider::horizontal::default()).padding([space_xxs, space_s]),
+            padded_control(text::title3("Customization")),
+            padded_control(
+                toggler(self.isWordClock || self.is_word_clock)
+                    .on_toggle(Message::ToggleWordClock)
+                    .label("Word Clock".to_string())
+                    .text_size(14)
+                    .width(Length::Fill)
+            ),
+            padded_control(
+                toggler(self.isRainbowMode || self.is_rainbow_mode)
+                    .on_toggle(Message::ToggleRainbowMode)
+                    .label("Rainbow Mode".to_string())
+                    .text_size(14)
+                    .width(Length::Fill)
+            ),
         ]
         .padding([8, 0]);
 
