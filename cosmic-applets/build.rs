@@ -84,6 +84,12 @@ fn main() {
             "cosmic-applet-time-keywords",
         ),
         (
+            "com.system76.CosmicAppletPotatoTime",
+            "cosmic-applet-potato-time",
+            "cosmic-applet-time-comment",
+            "cosmic-applet-time-keywords",
+        ),
+        (
             "com.system76.CosmicAppletWorkspaces",
             "cosmic-applet-workspaces",
             "cosmic-applet-workspaces-comment",

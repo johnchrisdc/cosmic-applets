@@ -20,6 +20,7 @@ cosmic-applet-power = { path = "../cosmic-applet-power" }
 cosmic-applet-status-area = { path = "../cosmic-applet-status-area" }
 cosmic-applet-tiling = { path = "../cosmic-applet-tiling" }
 cosmic-applet-time = { path = "../cosmic-applet-time" }
+cosmic-applet-potato-time = { path = "../cosmic-applet-potato-time" }
 cosmic-applet-workspaces = { path = "../cosmic-applet-workspaces" }
 cosmic-applet-input-sources = { path = "../cosmic-applet-input-sources" }
 cosmic-panel-button = { path = "../cosmic-panel-button" }

@@ -29,6 +29,7 @@ fn main() -> cosmic::iced::Result {
         "cosmic-applet-status-area" => cosmic_applet_status_area::run(),
         "cosmic-applet-tiling" => cosmic_applet_tiling::run(),
         "cosmic-applet-time" => cosmic_applet_time::run(),
+        "cosmic-applet-potato-time" => cosmic_applet_potato_time::run(),
         "cosmic-applet-workspaces" => cosmic_applet_workspaces::run(),
         "cosmic-applet-input-sources" => cosmic_applet_input_sources::run(),
         "cosmic-panel-button" => cosmic_panel_button::run(),
