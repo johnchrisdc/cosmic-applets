@@ -53,6 +53,13 @@ static AUTOSIZE_MAIN_ID: LazyLock<Id> = LazyLock::new(|| Id::new("autosize-main"
 // and other specifiers have to be added depending on locales.
 const STRFTIME_SECONDS: &[char] = &['S', 'T', '+', 's'];
 
+const RAINBOW_COLORS: [cosmic::iced::Color; 4] = [
+    cosmic::iced::Color::from_rgb(0xFF as f32 / 255.0, 0x00 as f32 / 255.0, 0x52 as f32 / 255.0),
+    cosmic::iced::Color::from_rgb(0xFF as f32 / 255.0, 0xD4 as f32 / 255.0, 0x00 as f32 / 255.0),
+    cosmic::iced::Color::from_rgb(0x00 as f32 / 255.0, 0xC6 as f32 / 255.0, 0x8D as f32 / 255.0),
+    cosmic::iced::Color::from_rgb(0x00 as f32 / 255.0, 0x55 as f32 / 255.0, 0xDA as f32 / 255.0),
+];
+
 fn get_system_locale() -> Locale {
     for var in ["LC_TIME", "LC_ALL", "LANG"] {
         if let Ok(locale_str) = std::env::var(var) {
@@ -94,6 +101,8 @@ pub struct Window {
     locale: Locale,
     pub isWordClock: bool,
     pub is_word_clock: bool,
+    pub isRainbowMode: bool,
+    pub is_rainbow_mode: bool,
 }
 
 #[derive(Debug, Clone)]
@@ -192,11 +201,38 @@ impl Window {
             .flatten()
     }
 
+    fn format_rainbow_text<'a>(
+        &'a self,
+        text: &str,
+        color_idx: &mut usize,
+    ) -> Element<'a, Message> {
+        if self.isRainbowMode || self.is_rainbow_mode {
+            let mut r = row![].spacing(0).align_y(Alignment::Center);
+            for c in text.chars() {
+                if c == ' ' {
+                    r = r.push(self.core.applet.text(" "));
+                } else {
+                    let txt = self
+                        .core
+                        .applet
+                        .text(c.to_string())
+                        .class(RAINBOW_COLORS[*color_idx % 4]);
+                    *color_idx += 1;
+                    r = r.push(txt);
+                }
+            }
+            r.into()
+        } else {
+            self.core.applet.text(text.to_owned()).into()
+        }
+    }
+
     fn vertical_layout(&self) -> Element<'_, Message> {
+        let mut color_idx = 0;
         let elements: Vec<Element<'_, Message>> = if let Some(strftime) = self.maybe_strftime() {
             strftime
                 .split_whitespace()
-                .map(|piece| self.core.applet.text(piece.to_owned()).into())
+                .map(|piece| self.format_rainbow_text(piece, &mut color_idx))
                 .collect()
         } else {
             let mut elements = Vec::new();
@@ -216,7 +252,7 @@ impl Window {
                     .to_string();
 
                 for p in formatted_date.split_whitespace() {
-                    elements.push(self.core.applet.text(p.to_owned()).into());
+                    elements.push(self.format_rainbow_text(p, &mut color_idx));
                 }
                 elements.push(
                     rule::horizontal(2)
@@ -234,7 +270,7 @@ impl Window {
                     self.now.second() as u32,
                 );
                 for p in formatted_time.split_whitespace() {
-                    elements.push(self.core.applet.text(p.to_owned()).into());
+                    elements.push(self.format_rainbow_text(p, &mut color_idx));
                 }
             } else {
                 let mut fs = fieldsets::T::medium();
@@ -246,10 +282,8 @@ impl Window {
                     .format(&datetime)
                     .to_string();
 
-                // todo: split using formatToParts when it is implemented
-                // https://github.com/unicode-org/icu4x/issues/4936#issuecomment-2128812667
                 for p in formatted_time.split_whitespace().flat_map(|s| s.split(':')) {
-                    elements.push(self.core.applet.text(p.to_owned()).into());
+                    elements.push(self.format_rainbow_text(p, &mut color_idx));
                 }
             }
 
@@ -343,13 +377,16 @@ impl Window {
             }
         };
 
+        let mut color_idx = 0;
+        let content_element = self.format_rainbow_text(&formatted_date, &mut color_idx);
+
         Element::from(
             row!(
-                self.core.applet.text(formatted_date),
+                content_element,
                 container(space::vertical().height(Length::Fixed(
                     (self.core.applet.suggested_size(true).1
                         + 2 * self.core.applet.suggested_padding(true).1)
-                        as f32
+                        as f32,
                 )))
             )
             .align_y(Alignment::Center),
@@ -388,6 +425,8 @@ impl cosmic::Application for Window {
                 locale,
                 isWordClock: true,
                 is_word_clock: true,
+                isRainbowMode: true,
+                is_rainbow_mode: true,
             },
             Task::none(),
         )
