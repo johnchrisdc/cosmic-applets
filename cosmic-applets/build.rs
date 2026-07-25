@@ -30,6 +30,12 @@ fn main() {
             "cosmic-applet-battery-keywords",
         ),
         (
+            "com.system76.CosmicAppletPotatoBattery",
+            "cosmic-applet-potato-battery",
+            "cosmic-applet-potato-battery-comment",
+            "cosmic-applet-potato-battery-keywords",
+        ),
+        (
             "com.system76.CosmicAppletBluetooth",
             "cosmic-applet-bluetooth",
             "cosmic-applet-bluetooth-comment",

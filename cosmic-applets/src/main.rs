@@ -21,6 +21,7 @@ fn main() -> cosmic::iced::Result {
         "cosmic-applet-a11y" => cosmic_applet_a11y::run(),
         "cosmic-applet-audio" => cosmic_applet_audio::run(),
         "cosmic-applet-battery" => cosmic_applet_battery::run(),
+        "cosmic-applet-potato-battery" => cosmic_applet_potato_battery::run(),
         "cosmic-applet-bluetooth" => cosmic_applet_bluetooth::run(),
         "cosmic-applet-minimize" => cosmic_applet_minimize::run(),
         "cosmic-applet-network" => cosmic_applet_network::run(),

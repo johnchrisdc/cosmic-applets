@@ -1,0 +1,15 @@
+[Desktop Entry]
+Name=Potato Power & Battery
+Comment=Power modes and power saving options
+Type=Application
+Exec=cosmic-applet-potato-battery
+Terminal=false
+Categories=COSMIC;
+Keywords=COSMIC;Applet;Power;Battery;Potato;
+Icon=com.system76.CosmicAppletBattery-symbolic
+StartupNotify=true
+NoDisplay=true
+X-CosmicApplet=true
+X-CosmicShrinkable=true
+X-CosmicHoverPopup=Start
+X-OverflowPriority=10
