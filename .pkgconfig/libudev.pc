@@ -1,1 +1,10 @@
-/usr/share/pkgconfig/udev.pc
+prefix=/usr
+exec_prefix=/usr
+libdir=/home/jcdc/Documents/GitHub/cosmic-applets/.pkgconfig/lib
+includedir=/usr/include
+
+Name: libudev
+Description: libudev library
+Version: 255
+Libs: -L${libdir} -ludev
+Cflags: -I${includedir}

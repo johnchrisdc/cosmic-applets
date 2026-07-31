@@ -197,7 +197,6 @@ enum Message {
     ReleaseScreenBrightness,
     InitChargingLimit(Option<bool>),
     SetChargingLimit(bool),
-    ToggleShowPercentage(bool),
     KeyboardBacklight(KeyboardBacklightUpdate),
     UpowerDevice(DeviceDbusEvent),
     GpuInit(UnboundedSender<()>),
@@ -350,14 +349,6 @@ impl cosmic::Application for CosmicBatteryApplet {
                     return cosmic::iced::Task::perform(unset_charging_limit(), |_| {
                         cosmic::Action::None
                     });
-                }
-            }
-            Message::ToggleShowPercentage(show) => {
-                self.config.show_percentage = show;
-                if let Ok(helper) = Config::new(Self::APP_ID, BatteryAppletConfig::VERSION)
-                    && let Err(err) = self.config.write_entry(&helper)
-                {
-                    tracing::error!(?err, "Error writing config");
                 }
             }
             Message::Errored(why) => {
@@ -762,24 +753,6 @@ impl cosmic::Application for CosmicBatteryApplet {
                     toggler(charging_limit)
                         .on_toggle(Message::SetChargingLimit)
                         .label(fl!("max-charge"))
-                        .text_size(14)
-                        .width(Length::Fill),
-                )
-                .into(),
-            );
-            content.push(
-                padded_control(divider::horizontal::default())
-                    .padding([space_xxs, space_s])
-                    .into(),
-            );
-        }
-
-        if !self.no_battery {
-            content.push(
-                padded_control(
-                    toggler(self.config.show_percentage)
-                        .on_toggle(Message::ToggleShowPercentage)
-                        .label(fl!("show-battery-percentage"))
                         .text_size(14)
                         .width(Length::Fill),
                 )

@@ -12,4 +12,3 @@ until-empty = until empty
 power-settings = Power & Battery settings...
 dgpu-running = Discrete GPU is active and can reduce battery life
 dgpu-applications = Applications using {$gpu_name} discrete GPU
-show-battery-percentage = Show Battery Percentage
